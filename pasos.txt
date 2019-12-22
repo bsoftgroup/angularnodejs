@@ -1,0 +1,108 @@
+Using username "ubuntu".
+Authenticating with public key "imported-openssh-key"
+Welcome to Ubuntu 16.04.6 LTS (GNU/Linux 4.4.0-1092-aws x86_64)
+
+ * Documentation:  https://help.ubuntu.com
+ * Management:     https://landscape.canonical.com
+ * Support:        https://ubuntu.com/advantage
+
+0 packages can be updated.
+0 updates are security updates.
+
+New release '18.04.3 LTS' available.
+Run 'do-release-upgrade' to upgrade to it.
+
+
+To run a command as administrator (user "root"), use "sudo <command>".
+See "man sudo_root" for details.
+
+ubuntu@ip-172-31-34-18:~$ sudo passwd root
+Enter new UNIX password:
+Retype new UNIX password:
+passwd: password updated successfully
+ubuntu@ip-172-31-34-18:~$ sudo apt update
+ubuntu@ip-172-31-34-18:~$ su root
+password:
+root@ip-172-31-34-18:/# mysqladmin -u root -p password
+Enter password:
+New password:
+Confirm new password:
+
+root@ip-172-31-34-18:/# sudo apt install mysql-server
+root@ip-172-31-34-18:/# sudo mysql_secure_installation
+
+Securing the MySQL server deployment.
+
+Enter password for user root:
+
+VALIDATE PASSWORD PLUGIN can be ...... VALIDATE PASSWORD plugin?
+Press y|Y for Yes, any other key for No: n
+
+Using existing password for root.
+Change the password for root ? ((Press y|Y for Yes, any other key for No) : y
+New password:
+Re-enter new password:
+
+By default, a MySQL installation has an anonymous user,.....
+Remove anonymous users? (Press y|Y for Yes, any other key for No) : y
+
+Normally, root should only be allowed to connect ...
+Disallow root login remotely? (Press y|Y for Yes, any other key for No) : n
+
+By default, MySQL comes with a database named 'test' .....
+Remove test database and access to it? (Press y|Y for Yes, any other key for No) : n
+
+Reloading the privilege tables will ensure that all changes ...
+Reload privilege tables now? (Press y|Y for Yes, any other key for No) : yes
+
+All done!
+
+root@ip-172-31-34-18:/# mysql -u root -p
+Enter password:
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 10
+Server version: 5.7.28-0ubuntu0.16.04.2 (Ubuntu)
+
+Copyright (c) 2000, 2019, Oracle and/or its affiliates. All rights reserved.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> 
+
+exit;
+
+Remote conecction
+-----------------
+
+vim /etc/mysql/mysql.conf.d/mysqld.cnf
+Under the [mysqld] Locate the Line,
+
+bind-address            = 127.0.0.1
+
+And change it to,
+
+bind-address            = 0.0.0.0
+
+systemctl restart mysql.service
+
+
+consulta los usuarios 
+SELECT user,host,password FROM mysql.user
+
+//permite que el usuario se conecte de modo remoto
+CREATE USER 'username'@'%' IDENTIFIED BY 'password';
+
+CREATE USER 'root'@'%' IDENTIFIED BY '123456';
+mysql> CREATE USER 'root'@'203.0.113.2' IDENTIFIED BY 'root_password';
+DANDO PRIVILEGIOS
+------------------
+mysql> GRANT ALL PRIVILEGES ON *.* TO 'root'@'203.0.113.2' WITH GRANT OPTION;
+mysql> FLUSH PRIVILEGES;
+
+
+https://www.digitalocean.com/community/tutorials/como-instalar-mysql-en-ubuntu-18-04-es
+
